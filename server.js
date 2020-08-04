@@ -24,6 +24,34 @@ Initialize the main website folder.
  */
 app.use(express.static('client'));
 
+// books obj
+let greetings = {
+    "en": "Hi",
+    "fr": "Bonjure"
+}
+
+/*
+Routes
+ */
+// home route
+app.get("/", () => {
+    return JSON.stringify({
+        'success': true,
+        "welcome": "HEEEYYY!"
+    })
+})
+
+
+// get greetings route
+app.get("/greetings", getGreetings)
+function getGreetings (){
+    return JSON.stringify({
+        'success': true,
+        'greetings': greetings
+    })
+}
+
+
 /*
  Server
  */

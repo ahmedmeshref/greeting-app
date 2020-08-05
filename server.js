@@ -50,19 +50,32 @@ app.get("/greeting", function (req, res){
 // add new greetings 
 app.post("/greeting", addNewGreeting)
 function addNewGreeting (req, res){
-    console.log(req.body);
-    res.send(
-        JSON.stringify({
-            'success': true,
-            'greetings': greetings
-        })
-    );
+    // NOTE: req.body comes as an object, same as flask, it was sent as a JSON but recieved as dict.
+    let new_greeting = req.body,
+        lang = new_greeting["lang"],
+        greeting = new_greeting["greeting"];
+    if (lang && greeting && !(lang in greetings)){
+        greetings[lang] = greeting[0].toUpperCase() + greeting.slice(1,);
+        res.send(
+            JSON.stringify({
+                'success': true,
+                'greetings': greetings
+            })
+        );
+    } else {
+        res.status(400).send(
+            JSON.stringify({
+                'success': false,
+                'message': "bad request"
+            })
+        );
+    }
 }
 
 
 
 /* Server */
-const port = 9000,
+const port = 3000,
     server = app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`)
     });

@@ -1,13 +1,9 @@
-/*
- initialize express application
- */
+/* initialize express application */
 const express = require('express');
 let app = express();
 
 
-/*
- App Configurations
- */
+/* App Configurations */
 const bodyParser = require('body-parser'),
     cors = require('cors');
 // Configure express to use body-parser as middle-ware.
@@ -30,32 +26,43 @@ let greetings = {
     "fr": "Bonjure"
 }
 
-/*
-Routes
- */
+/* Routes */
 // home route
-app.get("/", () => {
-    return JSON.stringify({
-        'success': true,
-        "welcome": "HEEEYYY!"
-    })
+app.get("/", (req, res) => {
+    res.send(
+        JSON.stringify({
+            "success": true,
+            "greeting": "Hey, how are you?"
+        })
+    )
 })
 
-
 // get greetings route
-app.get("/greetings", getGreetings)
-function getGreetings (){
-    return JSON.stringify({
-        'success': true,
-        'greetings': greetings
-    })
+app.get("/greeting", function (req, res){
+    res.send(
+        JSON.stringify({
+            'success': true,
+            'greetings': greetings
+        })
+    )
+})
+
+// add new greetings 
+app.post("/greeting", addNewGreeting)
+function addNewGreeting (req, res){
+    console.log(req.body);
+    res.send(
+        JSON.stringify({
+            'success': true,
+            'greetings': greetings
+        })
+    );
 }
 
 
-/*
- Server
- */
-const port = 8000,
+
+/* Server */
+const port = 9000,
     server = app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`)
     });

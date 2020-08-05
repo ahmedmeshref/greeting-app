@@ -5,7 +5,8 @@ let app = express();
 
 /* App Configurations */
 const bodyParser = require('body-parser'),
-    cors = require('cors');
+    cors = require('cors'),
+    path = require('path');
 // Configure express to use body-parser as middle-ware.
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -51,7 +52,7 @@ app.get("/greeting", function (req, res){
 app.get("/greeting/create", showNewGreetingPage)
 function showNewGreetingPage (req, res){
     // render a create new page;
-    res.sendFile("views/create_greeting.html")
+    res.sendFile(path.join(__dirname+'/client/views/create_greeting.html'));
 }
 
 // POST: create new greetings
@@ -61,8 +62,9 @@ function createNewGreeting (req, res){
     let new_greeting = req.body,
         lang = new_greeting["lang"],
         greeting = new_greeting["greeting"];
+    console.log(lang, greeting, new_greeting);
     if (lang && greeting && !(lang in greetings)){
-        greetings[lang] = greeting[0].toUpperCase() + greeting.slice(1,);
+        greetings[lang] = greeting[0].toUpperCase() + greeting.slice(1, );
         res.send(
             JSON.stringify({
                 'success': true,

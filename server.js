@@ -47,9 +47,16 @@ app.get("/greeting", function (req, res){
     )
 })
 
-// add new greetings 
-app.post("/greeting", addNewGreeting)
-function addNewGreeting (req, res){
+// GET: create new greetings page
+app.get("/greeting/create", showNewGreetingPage)
+function showNewGreetingPage (req, res){
+    // render a create new page;
+    res.sendFile("views/create_greeting.html")
+}
+
+// POST: create new greetings
+app.post("/greeting/create", createNewGreeting)
+function createNewGreeting (req, res){
     // NOTE: req.body comes as an object, same as flask, it was sent as a JSON but recieved as dict.
     let new_greeting = req.body,
         lang = new_greeting["lang"],

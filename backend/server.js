@@ -23,8 +23,8 @@ app.use(express.static('client'));
 
 // books obj
 let greetings = {
-    "en": "Hi",
-    "fr": "Bonjure"
+    "EN": "Hi",
+    "FR": "Bonjure"
 }
 
 /* Routes */
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 })
 
 // get greetings route
-app.get("/greeting", function (req, res){
+app.get("/greeting", function (req, res) {
     res.send(
         JSON.stringify({
             'success': true,
@@ -48,27 +48,30 @@ app.get("/greeting", function (req, res){
     )
 })
 
-// GET: create new greetings page
-app.get("/greeting/create", showNewGreetingPage)
-function showNewGreetingPage (req, res){
-    // render a create new page;
-    res.sendFile(path.join(__dirname+'/client/views/create_greeting.html'));
-}
+// FOR LEARNING // GET: create new greetings page
+// app.get("/greeting/create", showNewGreetingPage)
+// function showNewGreetingPage (req, res){
+//     // render a create new page;
+//     res.sendFile(path.join(__dirname+'/client/views/create_greeting.html'));
+// }
 
 // POST: create new greetings
-app.post("/greeting/create", createNewGreeting)
-function createNewGreeting (req, res){
-    // NOTE: req.body comes as an object, same as flask, it was sent as a JSON but recieved as dict.
+app.post("/greeting", createNewGreeting)
+
+function createNewGreeting(req, res) {
+    // NOTE: req.body comes as an object, same as flask, it was sent as a JSON but received as dict.
     let new_greeting = req.body,
-        lang = new_greeting["lang"],
-        greeting = new_greeting["greeting"];
+        lang = new_greeting["lang"] ? new_greeting["lang"].toUpperCase() : null,
+        greeting = new_greeting["greeting"] ? new_greeting["greeting"][0].toUpperCase() +
+            new_greeting["greeting"].slice(1,) : null;
     console.log(lang, greeting, new_greeting);
-    if (lang && greeting && !(lang in greetings)){
-        greetings[lang] = greeting[0].toUpperCase() + greeting.slice(1, );
+    if (lang && greeting && !(lang in greetings)) {
+        greetings[lang] = greeting;
+        let created_greeting = {[lang]: greeting}
         res.send(
             JSON.stringify({
                 'success': true,
-                'greetings': greetings
+                'greeting': created_greeting
             })
         );
     } else {
@@ -80,7 +83,6 @@ function createNewGreeting (req, res){
         );
     }
 }
-
 
 
 /* Server */

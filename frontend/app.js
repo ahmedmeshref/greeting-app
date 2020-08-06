@@ -1,20 +1,59 @@
 app = {
     create_greeting_form: document.getElementById("create_greeting"),
-    greeting_wrapper : document.getElementById("greeting-wrapper")
+    greeting_wrapper : document.getElementById("greetings-wrapper")
 }
 
-let append_new_greeting = (res) => {
-    let LI = document.createElement("li");
-    LI.innerHTML = `${res.success}`;
-    app.greeting_wrapper.appendChild(LI);
+// ------------------------------------------------------------------------------------------------------
+// Render Home List of Greetings
+// ------------------------------------------------------------------------------------------------------
+
+function getGreetings (){
+    fetch('http://localhost:3000/greeting', {
+        method: "get",
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+        .then((res) => {
+            return res.json();
+        })
+        .then((resVal) => {
+            renderGreetings(resVal.greetings);
+        })
+        .catch((err) => {
+            alert("sorry can't find greetings, Refresh the page!");
+            console.log(err);
+        })
 }
+
+let ind = 0;
+
+let renderGreetings = (greetings) => {
+    let fragment = document.createDocumentFragment();
+    for (const [key, val] of Object.entries(greetings)){
+        let li = document.createElement("li");
+        li.classList.add("list-group-item");
+        li.innerHTML = `${key}: ${val}`;
+        fragment.appendChild(li);
+    }
+    app.greeting_wrapper.appendChild(fragment);
+    console.log("successfully rendered all..");
+}
+
+getGreetings();
+
+
+
+// ------------------------------------------------------------------------------------------------------
+// Create New Greeting
+// ------------------------------------------------------------------------------------------------------
 
 // Send POST request: create new lang
 let create_greeting = (evt) => {
     evt.preventDefault();
     let lang= document.getElementById("lang"),
         greeting= document.getElementById("greeting");
-    fetch('/greeting/create', {
+    fetch('http://localhost:3000/greeting', {
         method: "POST",
         headers: {
             'Content-type': 'application/json'
@@ -25,11 +64,14 @@ let create_greeting = (evt) => {
             'greeting': greeting.value
         })
     })
-        .then((res) => JSON.parse(res))
-        .then((resObj) => {
-            console.log(resObj);
-            append_new_greeting(resObj);
+        .then((res) => res.json())
+        .then((resRes) => {
+            console.log(resRes);
+            renderGreetings(resRes.greeting);
+            lang.value = greeting.value = null;
         })
-        .catch((err) => {console.log(err)})
+        .catch((err) => {
+            console.log(err)
+        })
 }
 app.create_greeting_form.addEventListener('submit', create_greeting);

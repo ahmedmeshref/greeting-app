@@ -24,6 +24,13 @@ let sendReq = async (url, req_method, data = null) => {
 }
 
 
+let setElementsToNull = (elms_array) => {
+    elms_array.forEach((ele) => {
+        ele.value  = null;
+    })
+}
+
+
 // ------------------------------------------------------------------------------------------------------
 // Render Home List of Greetings
 // ------------------------------------------------------------------------------------------------------
@@ -56,8 +63,16 @@ getGreetings();
 // Create New Greeting
 // ------------------------------------------------------------------------------------------------------
 
+let renderNewGreeting = (data) => {
+    if (data["success"]) {
+        renderGreetings(data["greeting"]);
+    } else {
+        alert(data["msg"]);
+    }
+}
+
 // Send POST request: create new lang
-let create_greeting = (evt) => {
+let createGreeting = (evt) => {
     evt.preventDefault();
     const lang = document.getElementById("lang"),
         greeting = document.getElementById("greeting"),
@@ -69,11 +84,13 @@ let create_greeting = (evt) => {
         method = "POST";
     sendReq(url, method, data)
         .then((resRes) => {
-            renderGreetings(resRes.greeting);
-            lang.value = greeting.value = null;
+            renderNewGreeting(resRes);
+            setElementsToNull([lang, greeting]);
         })
         .catch((err) => {
             print(err)
         })
 }
-app.create_greeting_form.addEventListener('submit', create_greeting);
+
+app.create_greeting_form.addEventListener('submit', createGreeting);
+

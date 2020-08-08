@@ -14,13 +14,6 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-/*
-Initialize the main website folder.
-- This line of code connects our server-side code (the code in the server.js file) to our client-side code
-  (the browser code written in the files housed in the website folder).
- */
-app.use(express.static('client'));
-
 // books obj
 let greetings = {
     "EN": "Hi",
@@ -29,7 +22,7 @@ let greetings = {
 
 /* Routes */
 // home route
-app.get("/", (req, res) => {
+app.get("/", function (req, res) {
     res.send(
         JSON.stringify({
             "success": true,
@@ -47,13 +40,6 @@ app.get("/greeting", function (req, res) {
         })
     )
 })
-
-// FOR LEARNING // GET: create new greetings page
-// app.get("/greeting/create", showNewGreetingPage)
-// function showNewGreetingPage (req, res){
-//     // render a create new page;
-//     res.sendFile(path.join(__dirname+'/client/views/create_greeting.html'));
-// }
 
 // POST: create new greetings
 app.post("/greeting", createNewGreeting)
@@ -74,14 +60,21 @@ function createNewGreeting(req, res) {
             })
         );
     } else {
-        res.status(400).send(
+        res.send(
             JSON.stringify({
                 'success': false,
-                'message': "bad request"
+                'msg': "Err: Lang already exists."
             })
         );
     }
 }
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+    let err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
 
 /* Server */

@@ -64,7 +64,6 @@ function createNewGreeting(req, res) {
         lang = new_greeting["lang"] ? new_greeting["lang"].toUpperCase() : null,
         greeting = new_greeting["greeting"] ? new_greeting["greeting"][0].toUpperCase() +
             new_greeting["greeting"].slice(1,) : null;
-    console.log(lang, greeting, new_greeting);
     if (lang && greeting && !(lang in greetings)) {
         greetings[lang] = greeting;
         let created_greeting = {[lang]: greeting}
